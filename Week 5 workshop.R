@@ -73,22 +73,39 @@ read_csv("https://3mmarand.github.io/BIO00058M-Data-science-2020/data-raw/Human-
   coord_flip()
 
 #Task 2
-#Read In data
+#Read In data (using readtable as readtable2 assumes column names, and we want to remove them.)
 file <- "http://www.ndbc.noaa.gov/view_text_file.php?filename=44025h2011.txt.gz&dir=data/historical/stdmet/"
 readLines(file, n = 4)
 #Give column names
-buoy44025 <- read_table(file, 
+buoy44025 <- read_table(buoy.txt, 
                         col_names = FALSE,
                         skip = 2)
 
 
-?scan
+#Scan data, Extract data and remove #?
+T1 <- scan(file, nlines = 1, what = character()) %>%
+  str_remove("#")
+T1
+#this is because the first variable name is #YY and the # needs removing
+
+# change second row values
+T2 <- scan(file, skip = 1, nlines = 1, what = character()) %>%
+  str_remove("#") %>%
+  str_replace("/", "per")
+T2
+#Replace the / with per as / classes as a special character and wont be read correctly. 
+#using skip 1, nlines = 1 targets the second row. 
+#This changes measure from m/s to m per s
+
+#paste the variable name and its units
+#together for the column names
+names(buoy44025) <- paste(measure, units, sep = "_")
+#we've added in our units and measure columns
+#and separate them by a _
+#so we get YY_yr (which means years in years etc)
 
 
 
-
-
-names(buoy44025)
 
 
 
